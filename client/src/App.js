@@ -1,7 +1,9 @@
 // import logo from './logo.svg';
 import './App.css';
 import axios from 'axios';
-import SeismicData from './components/SeismicData';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import SeismicDataView from './components/SeismicData';
+import SeismicDetailView from './components/SeismicDataDetails';
 import { useEffect, useState } from 'react';
 
 const url = 'http://localhost:3000/api/features';
@@ -30,10 +32,15 @@ function App() {
     return () => mounted = false;
   }, []);
   return (
-    <div className="App">
-      <h1>USGS Ruby React</h1>
-      <SeismicData data={seismicData}/>
-    </div>
+    <Router>
+      <div className="App">
+        <h1>USGS Ruby React</h1>
+        <Routes>
+          <Route path="/" element={<SeismicDataView data={seismicData} />} />
+          <Route path="/details/:id" element={<SeismicDetailView data={seismicData} />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
