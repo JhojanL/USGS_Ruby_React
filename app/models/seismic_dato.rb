@@ -1,0 +1,2 @@
+class SeismicDato < ApplicationRecord
+end
