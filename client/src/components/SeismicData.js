@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Container, Form, ListGroup, Button, Pagination, Row, Col } from 'react-bootstrap';
+import { Container, Form, ListGroup, Pagination, Row, Col } from 'react-bootstrap';
 
 export default function SeismicDataView(props) {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = props.pagination ? Math.ceil(props.pagination.total / props.pagination.per_page) : 0;
+  const { fetchData, setSelectedMagTypes } = props;
   
   function handleMagTypeChange(event) {
     const value = event.target.value;
     if (event.target.checked) {
-      props.setSelectedMagTypes(prevMagTypes => {
+      setSelectedMagTypes(prevMagTypes => {
         const newMagTypes = [...prevMagTypes, value];
         localStorage.setItem('selectedMagTypes', JSON.stringify(newMagTypes));
         return newMagTypes;
       });
     } else {
-      props.setSelectedMagTypes(prevMagTypes => {
+      setSelectedMagTypes(prevMagTypes => {
         const newMagTypes = prevMagTypes.filter(magType => magType !== value);
         localStorage.setItem('selectedMagTypes', JSON.stringify(newMagTypes));
         return newMagTypes;
@@ -25,30 +26,38 @@ export default function SeismicDataView(props) {
 
   function handlePageChange(pageNumber) {
     setCurrentPage(pageNumber);
-    props.fetchData(pageNumber);
+    localStorage.setItem('currentPage', pageNumber);
+    fetchData(pageNumber);
   }
-
+  
   useEffect(() => {
-    props.fetchData(currentPage);
-  }, [currentPage]);
+    const storedPage = localStorage.getItem('currentPage');
+    const pageToFetch = storedPage ? Number(storedPage) : 1;
+    setCurrentPage(pageToFetch);
+    fetchData(pageToFetch);
+  }, [fetchData]);
 
   return (
     <Container>
       <h2 className="my-3">Seismic Data</h2>
       {/* mag_type filter */}
-      <Form.Group onChange={handleMagTypeChange}>
-        {['md', 'ml', 'ms', 'mw', 'me', 'mi', 'mb', 'mlg'].map(magType => (
-          <Form.Check
-            inline 
-            type="checkbox"
-            id={magType}
-            label={magType}
-            value={magType}
-            checked={JSON.parse(localStorage.getItem('selectedMagTypes') || '[]').includes(magType)}
-            key={magType}
-          />
-        ))}
-      </Form.Group>
+      <Row className="justify-content-center">
+        <Col xs="auto">
+          <Form.Group onChange={handleMagTypeChange}>
+            {['md', 'ml', 'ms', 'mw', 'me', 'mi', 'mb', 'mlg'].map(magType => (
+              <Form.Check
+                inline 
+                type="checkbox"
+                id={magType}
+                label={magType}
+                value={magType}
+                checked={JSON.parse(localStorage.getItem('selectedMagTypes') || '[]').includes(magType)}
+                key={magType}
+              />
+            ))}
+          </Form.Group>
+        </Col>
+      </Row>
       {/* page selector */}
       <Row className="justify-content-center">
         <Col xs="auto">
@@ -77,8 +86,8 @@ export default function SeismicDataView(props) {
       </Row>
       <ListGroup>
         {props.data && props.data.map((feature, index) => (
-          <ListGroup.Item key={index}>
-          <Link to={`/details/${feature.id}`} style={{ textDecoration: 'none', color: 'black', fontWeight: 'bold' }}>
+          <ListGroup.Item action variant="light" key={index}>
+          <Link to={`/details/${feature.id}`} style={{ textDecoration: 'none', color: 'white', fontWeight: 'bold' }}>
             {feature.feature_attributes.title}
           </Link>
         </ListGroup.Item>

@@ -4,7 +4,7 @@ import axios from 'axios';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import SeismicDataView from './components/SeismicData';
 import SeismicDetailView from './components/SeismicDataDetails';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const url = 'http://localhost:3000/api/features';
@@ -28,16 +28,16 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedMagTypes, setSelectedMagTypes] = useState([]);
 
-  const fetchData = (page) => {
+  const fetchData = useCallback((page) => {
     getSeismicData(selectedMagTypes, page).then(response => {
       setSeismicData(response.data);
       setPagination(response.pagination);
     });
-  };
-
+  }, [selectedMagTypes]);
+  
   useEffect(() => {
     fetchData(currentPage);
-  }, [selectedMagTypes, currentPage]);
+  }, [fetchData, currentPage]);
 
   return (
     <Router>

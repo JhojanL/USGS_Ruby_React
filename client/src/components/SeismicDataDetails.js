@@ -27,7 +27,13 @@ export default function SeismicDetailView(props) {
           <Button variant="primary" href={feature.links.external_url} className="mt-3">Link to USGS</Button>
         </Card.Body>
       </Card>
-      {/* Implementa la sección de comentarios aquí */}
+      {/* Comments section */}
+      <Card className="mt-3">
+        <Card.Body>
+          <Card.Title>Comments</Card.Title>
+          <Card.Text>Comments will go here.</Card.Text>
+        </Card.Body>
+      </Card>
     </Container>
   );
 }
