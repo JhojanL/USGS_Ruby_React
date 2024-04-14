@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import SeismicDataView from './components/SeismicData';
 import SeismicDetailView from './components/SeismicDataDetails';
 import { useEffect, useState } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const url = 'http://localhost:3000/api/features';
 
@@ -14,7 +15,7 @@ function getSeismicData(magTypes, page) {
   return axios.get(`${url}?${params}`)
     .then(response => {
       console.log(response.data);
-      return response.data.data;
+      return response.data;
     })
     .catch(error => {
       console.log(error);
@@ -23,24 +24,27 @@ function getSeismicData(magTypes, page) {
 
 function App() {
   const [seismicData, setSeismicData] = useState([]);
+  const [pagination, setPagination] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedMagTypes, setSelectedMagTypes] = useState([]);
 
-  useEffect(() => {
-    let mounted = true;
-    getSeismicData(selectedMagTypes, currentPage).then(data => {
-      if (mounted) {
-        setSeismicData(data);
-      }
+  const fetchData = (page) => {
+    getSeismicData(selectedMagTypes, page).then(response => {
+      setSeismicData(response.data);
+      setPagination(response.pagination);
     });
-    return () => mounted = false;
+  };
+
+  useEffect(() => {
+    fetchData(currentPage);
   }, [selectedMagTypes, currentPage]);
+
   return (
     <Router>
       <div className="App">
         <h1>USGS Ruby React</h1>
         <Routes>
-        <Route path="/" element={<SeismicDataView data={seismicData} setCurrentPage={setCurrentPage} setSelectedMagTypes={setSelectedMagTypes} />} />
+          <Route path="/" element={<SeismicDataView data={seismicData} pagination={pagination} setCurrentPage={setCurrentPage} setSelectedMagTypes={setSelectedMagTypes} fetchData={fetchData} />} />
           <Route path="/details/:id" element={<SeismicDetailView data={seismicData} />} />
         </Routes>
       </div>

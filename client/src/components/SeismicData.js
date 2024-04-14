@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Container, Form, ListGroup, Button, Pagination, Row, Col } from 'react-bootstrap';
 
 export default function SeismicDataView(props) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = props.pagination ? Math.ceil(props.pagination.total / props.pagination.per_page) : 0;
+  
   function handleMagTypeChange(event) {
     const value = event.target.value;
     if (event.target.checked) {
@@ -19,54 +23,67 @@ export default function SeismicDataView(props) {
     }
   }
 
-  function handlePageChange(event) {
-    props.setCurrentPage(Number(event.target.value));
+  function handlePageChange(pageNumber) {
+    setCurrentPage(pageNumber);
+    props.fetchData(pageNumber);
   }
 
+  useEffect(() => {
+    props.fetchData(currentPage);
+  }, [currentPage]);
+
   return (
-    <div>
-      <h2>Seismic Data</h2>
+    <Container>
+      <h2 className="my-3">Seismic Data</h2>
       {/* mag_type filter */}
-      <div onChange={handleMagTypeChange}>
-        <label>
-          <input type="checkbox" value="md" checked={JSON.parse(localStorage.getItem('selectedMagTypes') || '[]').includes('md')} /> md
-        </label>
-        <label>
-          <input type="checkbox" value="ml" checked={JSON.parse(localStorage.getItem('selectedMagTypes') || '[]').includes('ml')} /> ml
-        </label>
-        <label>
-          <input type="checkbox" value="ms" checked={JSON.parse(localStorage.getItem('selectedMagTypes') || '[]').includes('ms')} /> ms
-        </label>
-        <label>
-          <input type="checkbox" value="mw" checked={JSON.parse(localStorage.getItem('selectedMagTypes') || '[]').includes('mw')} /> mw
-        </label>
-        <label>
-          <input type="checkbox" value="me" checked={JSON.parse(localStorage.getItem('selectedMagTypes') || '[]').includes('me')} /> me
-        </label>
-        <label>
-          <input type="checkbox" value="mi" checked={JSON.parse(localStorage.getItem('selectedMagTypes') || '[]').includes('mi')} /> mi
-        </label>
-        <label>
-          <input type="checkbox" value="mb" checked={JSON.parse(localStorage.getItem('selectedMagTypes') || '[]').includes('mb')} /> mb
-        </label>
-        <label>
-          <input type="checkbox" value="mlg" checked={JSON.parse(localStorage.getItem('selectedMagTypes') || '[]').includes('mlg')} /> mlg
-        </label>
-      </div>
-      {/* page selector */}
-      <select onChange={handlePageChange}>
-        <option value={1}>Page 1</option>
-        <option value={2}>Page 2</option>
-        <option value={3}>Page 3</option>
-        {/* Add more options as needed */}
-      </select>
-      <ul>
-        {props.data && props.data.map((feature, index) => (
-          <li key={index}>
-            <Link to={`/details/${feature.id}`}>{feature.feature_attributes.title}</Link>
-          </li>
+      <Form.Group onChange={handleMagTypeChange}>
+        {['md', 'ml', 'ms', 'mw', 'me', 'mi', 'mb', 'mlg'].map(magType => (
+          <Form.Check
+            inline 
+            type="checkbox"
+            id={magType}
+            label={magType}
+            value={magType}
+            checked={JSON.parse(localStorage.getItem('selectedMagTypes') || '[]').includes(magType)}
+            key={magType}
+          />
         ))}
-      </ul>
-    </div>
+      </Form.Group>
+      {/* page selector */}
+      <Row className="justify-content-center">
+        <Col xs="auto">
+        <Pagination>
+          <Pagination.First onClick={() => handlePageChange(1)} />
+          <Pagination.Prev onClick={() => handlePageChange(currentPage > 1 ? currentPage - 1 : 1)} />
+
+          {currentPage > 3 && <Pagination.Item onClick={() => handlePageChange(1)}>1</Pagination.Item>}
+          {currentPage > 4 && <Pagination.Ellipsis />}
+
+          {Array.from({ length: 5 }, (_, i) => currentPage - 2 + i).map(pageNumber => (
+            pageNumber > 0 && pageNumber <= totalPages && (
+              <Pagination.Item key={pageNumber} active={pageNumber === currentPage} onClick={() => handlePageChange(pageNumber)}>
+                {pageNumber}
+              </Pagination.Item>
+            )
+          ))}
+
+          {currentPage < totalPages - 3 && <Pagination.Ellipsis />}
+          {currentPage < totalPages - 2 && <Pagination.Item onClick={() => handlePageChange(totalPages)}>{totalPages}</Pagination.Item>}
+
+          <Pagination.Next onClick={() => handlePageChange(currentPage < totalPages ? currentPage + 1 : totalPages)} />
+          <Pagination.Last onClick={() => handlePageChange(totalPages)} />
+        </Pagination>
+        </Col>
+      </Row>
+      <ListGroup>
+        {props.data && props.data.map((feature, index) => (
+          <ListGroup.Item key={index}>
+          <Link to={`/details/${feature.id}`} style={{ textDecoration: 'none', color: 'black', fontWeight: 'bold' }}>
+            {feature.feature_attributes.title}
+          </Link>
+        </ListGroup.Item>
+        ))}
+      </ListGroup>
+    </Container>
   )
 }
