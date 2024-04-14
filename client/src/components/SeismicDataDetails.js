@@ -15,6 +15,10 @@ export default function SeismicDetailView(props) {
         <p>{feature.feature_attributes.place}</p>
         <p>{new Date(feature.feature_attributes.time).toLocaleString()}</p>
         <p>{feature.feature_attributes.magnitude}</p>
+        <p>{feature.feature_attributes.mag_type}</p>
+        <p>{feature.feature_attributes.tsunami ? 'Tsunami: Si' : 'Tsunami: No'}</p>
+        <p>{feature.feature_attributes.coordinates.longitude}</p>
+        <p>{feature.feature_attributes.coordinates.latitude}</p>
         <a href={feature.links.external_url}>Link to USGS</a>
       {/* Implementa la sección de comentarios aquí */}
     </div>
