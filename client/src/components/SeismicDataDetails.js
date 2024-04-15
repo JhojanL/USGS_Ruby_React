@@ -13,8 +13,8 @@ export default function SeismicDetailView(props) {
   return (
     <Container>
       <Card className="mt-3">
+      <Card.Header>{feature.feature_attributes.title}</Card.Header>
         <Card.Body>
-          <Card.Title>{feature.feature_attributes.title}</Card.Title>
           <ListGroup variant="flush">
           <ListGroup.Item><strong>Place:</strong> {feature.feature_attributes.place}</ListGroup.Item>
           <ListGroup.Item><strong>Time:</strong> {new Date(feature.feature_attributes.time).toLocaleString()}</ListGroup.Item>
@@ -24,14 +24,24 @@ export default function SeismicDetailView(props) {
           <ListGroup.Item><strong>Longitude:</strong> {feature.feature_attributes.coordinates.longitude}</ListGroup.Item>
           <ListGroup.Item><strong>Latitude:</strong> {feature.feature_attributes.coordinates.latitude}</ListGroup.Item>
         </ListGroup>
-          <Button variant="primary" href={feature.links.external_url} className="mt-3">Link to USGS</Button>
+          <Button variant="light" href={feature.links.external_url} className="mt-3">Link to USGS</Button>
         </Card.Body>
       </Card>
       {/* Comments section */}
       <Card className="mt-3">
+        <Card.Header>Leave a comment</Card.Header>
         <Card.Body>
-          <Card.Title>Comments</Card.Title>
-          <Card.Text>Comments will go here.</Card.Text>
+          <Card.Text>
+            <textarea className="form-control" rows="3"></textarea>
+          </Card.Text>
+          <Button variant="primary">Submit</Button>
+        </Card.Body>
+      </Card>
+      <Card className="mt-3">
+      <Card.Header>Comments</Card.Header>
+        <Card.Body>
+          <Card.Text>A comment by Anonymous.</Card.Text>
+          <small className="text-muted">Anonymous</small>
         </Card.Body>
       </Card>
     </Container>
