@@ -19,10 +19,18 @@ class Api::FeaturesController < ApplicationController
     private
   
     def pagination_dict(collection)
-    {
-        current_page: collection.current_page,
-        total: collection.total_count,
-        per_page: collection.limit_value
-    }
+        if collection
+            {
+                current_page: collection.current_page,
+                total: collection.total_count,
+                per_page: collection.limit_value
+            }
+        else
+            {
+                current_page: 1,
+                total: 0,
+                per_page: 25
+            }
+        end
     end
 end

@@ -1,0 +1,9 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  body: MyText
+  seismic_dato: one
+
+two:
+  body: MyText
+  seismic_dato: two
