@@ -37,6 +37,12 @@
   }
 }
 
-/* .list-group-item:hover {
-  background-color: #f8f9fa;
-} */
+.perPageSelector {
+  width: 50%;
+  margin: 0 auto;
+}
+
+.perPageSelector select {
+  text-align: center;
+  text-align-last: center;
+}

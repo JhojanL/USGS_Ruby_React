@@ -10,9 +10,9 @@ import { Navbar } from 'react-bootstrap';
 
 const url = 'http://localhost:3000/api/features';
 
-function getSeismicData(magTypes, page) {
+function getSeismicData(magTypes, page, perPage) {
   const magTypeParams = magTypes.map(magType => `mag_type[]=${magType}`).join('&');
-  const params = `page=${page}&${magTypeParams}`;
+  const params = `page=${page}&per_page=${perPage}&${magTypeParams}`;
   return axios.get(`${url}?${params}`)
     .then(response => {
       console.log(response.data);
@@ -27,18 +27,20 @@ function App() {
   const [seismicData, setSeismicData] = useState([]);
   const [pagination, setPagination] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(15);
   const [selectedMagTypes, setSelectedMagTypes] = useState([]);
 
-  const fetchData = useCallback((page) => {
-    getSeismicData(selectedMagTypes, page).then(response => {
+  const fetchData = useCallback((page, perPage) => {
+    getSeismicData(selectedMagTypes, page, perPage).then(response => {
       setSeismicData(response.data);
       setPagination(response.pagination);
+      // setPerPage(response.pagination.per_page);
     });
   }, [selectedMagTypes]);
   
   useEffect(() => {
-    fetchData(currentPage);
-  }, [fetchData, currentPage]);
+    fetchData(currentPage, perPage);
+  }, [fetchData, currentPage, perPage]);
 
   return (
     <Router>
@@ -47,7 +49,7 @@ function App() {
           <Navbar.Brand as={Link} to="/">USGS Ruby React</Navbar.Brand>
         </Navbar>
         <Routes>
-          <Route path="/" element={<SeismicDataView data={seismicData} pagination={pagination} setCurrentPage={setCurrentPage} setSelectedMagTypes={setSelectedMagTypes} fetchData={fetchData} />} />
+          <Route path="/" element={<SeismicDataView data={seismicData} pagination={pagination} setCurrentPage={setCurrentPage} setPerPage={setPerPage} perPage={perPage} setSelectedMagTypes={setSelectedMagTypes} fetchData={fetchData} />} />
           <Route path="/details/:id" element={<SeismicDetailView data={seismicData} />} />
         </Routes>
       </div>
