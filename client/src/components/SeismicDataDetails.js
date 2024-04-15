@@ -1,10 +1,45 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Container, Card, ListGroup, Button } from 'react-bootstrap';
+import { Container, Card, ListGroup, Button, Alert } from 'react-bootstrap';
 
 export default function SeismicDetailView(props) {
   const { id } = useParams();
   const feature = props.data.find(feature => feature.id === Number(id));
+  const [comment, setComment] = React.useState("");
+  const [comments, setComments] = React.useState([]);
+  const [error, setError] = React.useState(null);
+  const [success, setSuccess] = React.useState(null);
+
+  React.useEffect(() => {
+    fetch(`http://127.0.0.1:3000/api/features/${id}/comments`)
+      .then(response => response.json())
+      .then(data => setComments(data));
+  }, [id]);
+
+  function handleSubmit() {
+    fetch(`http://127.0.0.1:3000/api/features/${id}/comments`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ body: comment })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to save comment');
+      }
+      return response.json();
+    })
+    .then(data => {
+      setComments(prevComments => [...prevComments, data]);
+      setComment('');
+      setSuccess('Comment submitted successfully.');
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      setError('Please do not submit comments without text.');
+    });
+  }
 
   if (!feature) {
     return <div>Loading...</div>;
@@ -12,6 +47,16 @@ export default function SeismicDetailView(props) {
 
   return (
     <Container>
+      {error && (
+        <Alert variant="danger" onClose={() => setError(null)} dismissible>
+          {error}
+        </Alert>
+      )}
+      {success && (
+        <Alert variant="success" onClose={() => setSuccess(null)} dismissible>
+          {success}
+        </Alert>
+      )}
       <Card className="mt-3">
       <Card.Header>{feature.feature_attributes.title}</Card.Header>
         <Card.Body>
@@ -32,17 +77,22 @@ export default function SeismicDetailView(props) {
         <Card.Header>Leave a comment</Card.Header>
         <Card.Body>
           <Card.Text>
-            <textarea className="form-control" rows="3"></textarea>
+            <textarea className="form-control" rows="3" value={comment} onChange={e => setComment(e.target.value)}></textarea>
           </Card.Text>
-          <Button variant="primary">Submit</Button>
+          <Button variant="primary" onClick={handleSubmit}>Submit</Button>
         </Card.Body>
       </Card>
       <Card className="mt-3">
-      <Card.Header>Comments</Card.Header>
-        <Card.Body>
-          <Card.Text>A comment by Anonymous.</Card.Text>
-          <small className="text-muted">Anonymous</small>
-        </Card.Body>
+        <Card.Header>Comments</Card.Header>
+        <ListGroup variant="flush">
+          {comments.map((comment, index) => (
+            <ListGroup.Item key={index}>
+              {comment.body}
+              <br />
+              <small className="text-muted">Anonymous</small>
+            </ListGroup.Item>
+          ))}
+        </ListGroup>
       </Card>
     </Container>
   );

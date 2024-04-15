@@ -1,11 +1,12 @@
 // import logo from './logo.svg';
 import './App.css';
 import axios from 'axios';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import SeismicDataView from './components/SeismicData';
 import SeismicDetailView from './components/SeismicDataDetails';
 import { useEffect, useState, useCallback } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Navbar } from 'react-bootstrap';
 
 const url = 'http://localhost:3000/api/features';
 
@@ -42,7 +43,9 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <h1>USGS Ruby React</h1>
+        <Navbar className="bg-body-tertiary justify-content-center">
+          <Navbar.Brand as={Link} to="/">USGS Ruby React</Navbar.Brand>
+        </Navbar>
         <Routes>
           <Route path="/" element={<SeismicDataView data={seismicData} pagination={pagination} setCurrentPage={setCurrentPage} setSelectedMagTypes={setSelectedMagTypes} fetchData={fetchData} />} />
           <Route path="/details/:id" element={<SeismicDetailView data={seismicData} />} />

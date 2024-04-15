@@ -1,4 +1,10 @@
 class Api::CommentsController < ApplicationController
+    def index
+        @seismic_dato = SeismicDato.find(params[:feature_id])
+        @comments = @seismic_dato.comments
+        render json: @comments
+    end
+    
     def create
         @seismic_dato = SeismicDato.find(params[:feature_id])
         @comment = @seismic_dato.comments.create(comment_params)

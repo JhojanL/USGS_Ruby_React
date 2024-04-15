@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   #Api definition
   namespace :api do
     resources :features, only: [:index] do
-      resources :comments, only: [:create]
+      resources :comments, only: [:create, :index]
     end
   end
 end
