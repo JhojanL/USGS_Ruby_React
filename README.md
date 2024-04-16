@@ -20,6 +20,9 @@ The full URL used to fetch the data is: "https://earthquake.usgs.gov/fdsnws/even
 
 The fetched data includes the following fields: `id`, `properties.mag`, `properties.place`, `properties.time`, `properties.url`, `properties.tsunami`, `properties.magType`, `properties.title`, `geometry.coordinates[0]` (longitude), and `geometry.coordinates[1]` (latitude).
 
+### Images
+![image](https://drive.google.com/uc?id=1iZIxbIxnD65ZU-wsjZIDraMmnSndPHzi)
+
 ### API Endpoints
 
 The application exposes two API endpoints:
