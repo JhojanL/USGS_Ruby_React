@@ -1,4 +1,4 @@
-# Seismic Data Application
+# Seismic Data Fetcher and Viewer
 
 ## Intruduction
 
