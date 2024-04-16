@@ -2,11 +2,11 @@
 
 ## Intruduction
 
-This application uses Ruby on Rails in API mode for the backend and React for the frontend. It fetches and persists seismic data from the USGS (earthquake.usgs.gov) and exposes three API endpoints for an external client to consume. A simple web page developed in React is used to interact with these endpoints.
+This application uses Ruby on Rails in API mode for the backend and React for the frontend. It fetches and persists seismic data from the USGS (earthquake.usgs.gov) and exposes three API endpoints for an external client to consume. A web page developed in React interacts with these endpoints.
 
 ## Backend Development
 
-The backend is a Ruby on Rails application that fetches and delivers seismic data. It includes a task for fetching and persisting data and three endpoints that are consumed by an external client.
+The backend is a Ruby on Rails application that fetches and delivers seismic data. It includes a task for fetching and persisting data and three endpoints an external client consumes.
 
 ### Data Fetching and Persistence
 
@@ -86,7 +86,7 @@ The application exposes three API endpoints:
 
 ## Frontend Development
 
-The frontend is a simple web page developed in React that interacts with the three API endpoints:
+The frontend is a web page developed in React that interacts with the three API endpoints:
 
 1. GET list of features
 2. GET list of comments associated with a feature
