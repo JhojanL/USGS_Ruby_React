@@ -1,9 +1,13 @@
 class Api::CommentsController < ApplicationController
-    def index
-        @seismic_dato = SeismicDato.find(params[:feature_id])
-        @comments = @seismic_dato.comments
-        render json: @comments
+  def index
+    @seismic_dato = SeismicDato.find_by(id: params[:feature_id])
+    if @seismic_dato.nil?
+      render json: { error: 'SeismicDato not found' }, status: :not_found
+    else
+      @comments = @seismic_dato.comments
+      render json: @comments
     end
+  end
     
     def create
         @seismic_dato = SeismicDato.find(params[:feature_id])

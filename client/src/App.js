@@ -30,11 +30,10 @@ function App() {
   const [perPage, setPerPage] = useState(15);
   const [selectedMagTypes, setSelectedMagTypes] = useState([]);
 
-  const fetchData = useCallback((page, perPage) => {
-    getSeismicData(selectedMagTypes, page, perPage).then(response => {
+  const fetchData = useCallback((page, perPage, magTypes) => {
+    getSeismicData(magTypes || selectedMagTypes, page, perPage).then(response => {
       setSeismicData(response.data);
       setPagination(response.pagination);
-      // setPerPage(response.pagination.per_page);
     });
   }, [selectedMagTypes]);
   

@@ -44,7 +44,7 @@ namespace :seismic do
         end
 
         # Delete data older than 30 days
-        SeismicDato.where('time < ?', 30.days.ago).delete_all
+        SeismicDato.where('time < ?', 30.days.ago).destroy_all
       end
     end
   end

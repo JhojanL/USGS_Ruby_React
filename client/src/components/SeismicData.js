@@ -14,12 +14,14 @@ export default function SeismicDataView(props) {
       setSelectedMagTypes(prevMagTypes => {
         const newMagTypes = [...prevMagTypes, value];
         localStorage.setItem('selectedMagTypes', JSON.stringify(newMagTypes));
+        fetchData(currentPage, perPage, newMagTypes);
         return newMagTypes;
       });
     } else {
       setSelectedMagTypes(prevMagTypes => {
         const newMagTypes = prevMagTypes.filter(magType => magType !== value);
         localStorage.setItem('selectedMagTypes', JSON.stringify(newMagTypes));
+        fetchData(currentPage, perPage, newMagTypes);
         return newMagTypes;
       });
     }
@@ -94,6 +96,7 @@ export default function SeismicDataView(props) {
           </Pagination>
         </Col>
       </Row>
+      {/* per_page selector */}
       <Row className="justify-content-center mb-3">
         <Col xs={12} sm={8} md={6} lg={4}>
         <Form.Group className="perPageSelector">
@@ -106,6 +109,7 @@ export default function SeismicDataView(props) {
         </Form.Group>
         </Col>
       </Row>
+      {/* registers */}
       <ListGroup>
         {props.data && props.data.map((feature, index) => (
           <ListGroup.Item action variant="light" key={index}>
